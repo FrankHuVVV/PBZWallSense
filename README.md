@@ -1,0 +1,103 @@
+# PBZWallSense
+
+《影之刃零》(Phantom Blade Zero) 的隔墙敌人标记模组。
+
+跑图时，在**没进战斗**的前提下，把被墙、门、地形挡住的敌人用一枚暗红水墨环标出来——
+推门进入房屋前，先知道里面有没有人。
+
+## 效果
+
+- 视野内的敌人**不标**；只有被遮挡、且尚未发现你的敌人会出现标记
+- 一旦进入战斗，所有标记立即消失
+- 标记随距离缩放（20–52 px），暗红色、半透明、轻微呼吸
+- 附带一个可开关的底部读数：`敌 5 · 25m内 2 · 待标 1 · 最近 15m · 潜行`
+
+## 前提
+
+| 项 | 要求 |
+|---|---|
+| 游戏 | Steam 版《影之刃零》，build **26266538**（UE 5.7） |
+| 模组框架 | **UE4SS 3.0.1**（本作自带，路径见下） |
+| 其他 | 无。不需要 Cheat Engine、不需要内存注入 |
+
+> 游戏更新后类名可能变化，届时需要自行调整 `main.lua` 里的类名或等待更新。
+
+## 安装（手动，三步）
+
+1. 找到游戏的 UE4SS Mods 目录：
+
+   ```
+   <游戏安装目录>\platform\steam\ue4ss\Mods\
+   ```
+
+2. 把压缩包里的 `PBZWallSense` 文件夹**整个**复制进去，最终结构应为：
+
+   ```
+   ...\platform\steam\ue4ss\Mods\PBZWallSense\Scripts\main.lua
+   ...\platform\steam\ue4ss\Mods\PBZWallSense\art\ring.png
+   ...\platform\steam\ue4ss\Mods\PBZWallSense\README.md
+   ```
+
+3. 用记事本打开同目录下的 `mods.txt`，在文件末尾追加一行（注意冒号前后各一个空格）：
+
+   ```
+   PBZWallSense : 1
+   ```
+
+4. **重启游戏**（不要依赖热重载：`EnableHotReloadSystem` 在本作里会卡死）。
+
+启动后日志 `platform\steam\ue4ss\UE4SS.log` 里应出现：
+
+```
+Starting Lua mod 'PBZWallSense'
+[PBZWallSense] 战斗状态钩子: 已注册
+[PBZWallSense] 提示条内部文本控件: 已找到（直接写文本，不触发音效）
+[PBZWallSense] 标记控件 = wb_damageindicator_C｜图片节点 = Image
+```
+
+## 卸载（手动，两步）
+
+1. 从 `mods.txt` 里删掉 `PBZWallSense : 1` 那一行；
+2. 删除 `Mods\PBZWallSense` 整个文件夹。
+
+模组不修改任何游戏文件，卸载后不留残留。
+
+## 使用
+
+| 键 | 作用 |
+|---|---|
+| **F7** | 标记开 / 关 |
+| **F8** | 底部读数开 / 关（再按一次关） |
+
+标记出现的条件（**全部**满足）：
+
+1. 敌人在 25 m 内、且活着；
+2. 敌人没把你放进仇恨列表；
+3. 你不在战斗状态；
+4. 相机到敌人胸口的射线被别的东西先挡住；
+5. 敌人落在屏幕内。
+
+## 调参
+
+参数都在 `Scripts\main.lua` 顶部的 `CFG` 表里，改完保存、重启游戏生效。
+
+| 项 | 默认 | 说明 |
+|---|---|---|
+| `maxDistCm` | 2500 | 关心半径（25 m） |
+| `alpha` | 0.55 | 环的不透明度 |
+| `sizeMinPx` / `sizeMaxPx` | 20 / 52 | 距离缩放后的像素范围 |
+| `sizeGain` | 2.6 | 距离→尺寸放大系数 |
+| `tint` | `{0.78, 0.22, 0.20}` | 暗红 |
+| `readoutMode` | `"tip"` | 改 `"log"` 则读数只写日志，屏幕只剩环 |
+| `hideInCombat` | true | 战斗中隐藏全部标记 |
+| `traceChannel` | 0 | 遮挡射线通道，打不到墙时改 1/2/3 |
+
+## 已知限制
+
+- 标记依赖游戏 UI 类 `wb_damageindicator_C`（目前唯一带 `Image` 节点的 HUD 控件）。若某次更新后它不再加载，标记会直接不出现。
+- 退出游戏时可能生成一个 crash dump，异常码 `0xC0000005`，固定在 `UE4SS.dll`。该现象在未安装本模组时也存在，属于 UE4SS 在本作上的既有问题，不影响游戏与存档。
+- 仅供单机使用。
+
+## 许可
+
+未指定许可证。转载、修改、二次分发前请先联系作者。
