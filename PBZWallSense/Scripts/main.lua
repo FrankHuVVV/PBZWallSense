@@ -684,15 +684,24 @@ local function showTip(text, animate)
 end
 
 -- 距离按 5 m 取整：走两步就换一次字，屏上就一直在跳
+local function bearingText(from, to, yawDeg)
+    if not (from and to) then return "" end
+    local ang = math.deg(math.atan(to.Y - from.Y, to.X - from.X))
+    local rel = (ang - (yawDeg or 0) + 540) % 360 - 180
+    local dirs = { "前", "右前", "右", "右后", "后", "左后", "左", "左前" }
+    local idx = math.floor(((rel + 22.5) % 360) / 45) + 1
+    return dirs[idx] or ""
+end
+
 local function tipText()
     local near = M.diag.nearest
     local nearTxt = "—"
     if near and near < 1e9 then
         local m = math.floor(near / 500 + 0.5) * 5
-        nearTxt = tostring(m) .. "m"
+        nearTxt = string.format("%dm·%s", m, bearingText(M.diag.meLoc, M.diag.nearestLoc, M.diag.camYaw))
     end
-    return string.format("标记 | 敌 %d · 25m内 %d · 待标 %d · 最近 %s · %s",
-        M.diag.enemies, M.diag.inRange, #M.targets, nearTxt,
+    return string.format("标记 | 敌 %d · %dm内 %d · 待标 %d · 最近 %s · %s",
+        M.diag.enemies, math.floor(CFG.maxDistCm / 100), M.diag.inRange, #M.targets, nearTxt,
         M.inCombat and "战斗中" or "潜行")
 end
 
@@ -768,6 +777,10 @@ local function refresh()
     local camLoc = cam:GetCameraLocation()
 
     local here = pawn:K2_GetActorLocation()
+    M.diag.meLoc = here
+    M.diag.nearestLoc = nil
+    M.diag.camYaw = 0
+    pcall(function() M.diag.camYaw = cam:GetCameraRotation().Yaw end)
 
     local all = listEnemies()
     M.diag.enemies = #all
@@ -779,7 +792,10 @@ local function refresh()
         local ok, eLoc = pcall(function() return e:K2_GetActorLocation() end)
         if ok and eLoc and eLoc.X then
             local d = distCm(here, eLoc)
-            if d < M.diag.nearest then M.diag.nearest = d end
+            if d < M.diag.nearest then
+                M.diag.nearest = d
+                M.diag.nearestLoc = eLoc
+            end
             if d <= CFG.maxDistCm then M.diag.inRange = M.diag.inRange + 1 end
 
             local hating = hatesPlayer(e, pawn)
