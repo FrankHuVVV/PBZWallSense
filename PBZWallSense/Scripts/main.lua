@@ -1045,6 +1045,45 @@ pcall(function()
     end)
 end)
 
+-- ------------------------------------------------------------------ 锁定距离热键
+
+-- [ / ] 调整锁定距离（±5 m，范围 10–80 m）；读数会立刻刷新
+local function distClamp(v)
+    if v < 1000 then return 1000 end
+    if v > 8000 then return 8000 end
+    return v
+end
+
+local function adjustDist(delta)
+    CFG.maxDistCm = distClamp(CFG.maxDistCm + delta)
+    if M.live then
+        M.nextTip = 0          -- 立刻刷新读数，不等下一个 1 秒
+        M.lastTipText = nil
+    end
+    log(string.format("锁定距离 = %d m", math.floor(CFG.maxDistCm / 100)))
+end
+
+local function bindFirst(names, fn, label)
+    for _, n in ipairs(names) do
+        local k = Key[n]
+        if k ~= nil then
+            local ok = pcall(function() RegisterKeyBind(k, fn) end)
+            if ok then
+                log("热键 " .. label .. " = Key." .. n)
+                return true
+            end
+        end
+    end
+    return false
+end
+
+pcall(function()
+    bindFirst({ "OEM_FOUR", "LEFT_BRACKET", "LBRACKET" },
+        function() adjustDist(-500) end, "[")
+    bindFirst({ "OEM_SIX", "RIGHT_BRACKET", "RBRACKET" },
+        function() adjustDist(500) end, "]")
+end)
+
 -- ------------------------------------------------------------------ 主循环
 
 LoopAsync(CFG.tickMs, function()
