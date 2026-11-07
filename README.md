@@ -41,39 +41,83 @@
 
 > 游戏更新后类名可能变化，届时需要自行调整 `main.lua` 里的类名或等待更新。
 
-## 先装 UE4SS（游戏不自带）
+## 第 1 步：安装 UE4SS（必做，游戏不自带）
 
-本模组是 **UE4SS 的 Lua 模组**，而 UE4SS 并不是游戏的一部分——必须自己先装一次。
+本模组是 **UE4SS 的 Lua 模组**。UE4SS 不是游戏的一部分，**必须先自己装一次**，
+否则后面的模组放进去也不会有任何反应（连日志都不会生成）。
 
-1. 打开 **<https://github.com/UE4SS-RE/RE-UE4SS/releases>**，下载 **3.0.1** 的 Windows 发行包
-   （文件名类似 `UE4SS_v3.0.1.zip`）。
-   > 本模组只在 3.0.1 上验证过；其他版本可能因为类名/接口变化而失效。
+> 下面所有路径里的 `<游戏目录>`，指你 Steam 里这个游戏的安装位置。
+> 不知道在哪：**Steam 库 → 右键「Phantom Blade Zero」→ 管理 → 浏览本地文件**，
+> 打开的窗口地址栏里那一串就是。
 
-2. 解压后，把发行包里的 `ue4ss` 文件夹**和** `dwmapi.dll` 一起复制到：
+### 1.1 下载
 
-   ```
-   <游戏安装目录>\platform\steam\
-   ```
+打开 <https://github.com/UE4SS-RE/RE-UE4SS/releases/tag/v3.0.1>，
+在页面最下面的 **Assets** 里点 **`UE4SS_v3.0.1.zip`** 下载。
 
-   装好后应该存在这两个文件：
+> 认准 **v3.0.1**：本模组只在 3.0.1 上验证过，其他版本可能因为接口/类名变化而失效。
+> 如果 3.0.1 页面上有多个 zip，选名字不带 `zDEV` 的那个。
 
-   ```
-   ...\platform\steam\ue4ss\UE4SS.dll
-   ...\platform\steam\dwmapi.dll
-   ```
+解压后你会看到一个文件夹，里面有这 6 样东西：
 
-   `dwmapi.dll` 是 UE4SS 的注入代理（文件属性里写着 `UE4SS Injection Proxy`），
-   游戏本身不提供它——这也是判断"到底装没装"的依据。
+```
+UE4SS.dll
+UE4SS-settings.ini
+dwmapi.dll
+Mods\                 （文件夹）
+README.md
+Changelog.md
+```
 
-3. 启动一次游戏再退出，确认生成了日志：
+### 1.2 摆放（关键，摆错就等于没装）
 
-   ```
-   ...\platform\steam\ue4ss\UE4SS.log
-   ```
+1. 进入 **`<游戏目录>\platform\steam\`** —— 这个目录里应该有 `PBZ.exe`。
+2. 在这个目录里**新建一个文件夹，名字就叫 `ue4ss`**（全小写）。
+3. 把解压出来的 **`UE4SS.dll`、`UE4SS-settings.ini`、`Mods` 文件夹** 三个东西，
+   剪切/复制进刚建的 `ue4ss` 文件夹里。
+   （`README.md`、`Changelog.md` 是说明文档，放不放都行。）
+4. 把 **`dwmapi.dll`** 复制到 **`<游戏目录>\platform\steam\`** 里，
+   也就是**和 `PBZ.exe` 同一个目录**（注意：它在 `ue4ss` 文件夹的**外面**）。
 
-   有日志 = 注入成功；没日志 = 位置放错或版本不对，先解决这个再装模组。
+做完之后，目录结构必须是这样：
 
-## 安装（手动，三步）
+```
+<游戏目录>\platform\steam\
+├── PBZ.exe
+├── dwmapi.dll          ← 从压缩包里复制到这里（和 exe 同级）
+└── ue4ss\              ← 新文件夹
+    ├── UE4SS.dll
+    ├── UE4SS-settings.ini
+    └── Mods\           ← 模组都放这里面
+```
+
+一句话记法：**`dwmapi.dll` 挨着 `PBZ.exe`，其余全部塞进 `ue4ss` 文件夹。**
+
+> `dwmapi.dll` 是 UE4SS 的注入代理（右键 → 属性 → 详细信息，描述写着
+> `UE4SS Injection Proxy`）。游戏本身没有这个文件，它也是判断"到底装没装"的标志。
+
+### 1.3 验证装好没有
+
+启动游戏，进到主菜单，然后**正常退出**。回到资源管理器看：
+
+```
+<游戏目录>\platform\steam\ue4ss\UE4SS.log
+```
+
+- **有这个文件** → 打开它，开头能看到 `UE4SS - v3.0.1 ...`，说明注入成功，可以继续装模组；
+- **没有这个文件** → 装错了，按下面的表逐条排查，别急着装模组。
+
+### 1.4 装不上时按这个表查
+
+| 现象 | 原因 | 怎么办 |
+|---|---|---|
+| 没有 `UE4SS.log` | `dwmapi.dll` 没放在 `PBZ.exe` 旁边 | 放回 `platform\steam\` |
+| 没有 `UE4SS.log` | `ue4ss` 文件夹名字/层级不对 | 必须是 `platform\steam\ue4ss\UE4SS.dll` |
+| 没有 `UE4SS.log` | 杀毒软件把 `dwmapi.dll` 删了 | 加白名单后重新复制 |
+| 启动就红屏 / 进不去游戏 | UE4SS 版本不适配当前游戏版本 | 删掉 `dwmapi.dll` 与 `ue4ss` 文件夹即可复原 |
+| 日志里有 `Failed to load ...` | 模组放错位置或 `mods.txt` 写错 | 见下一节的"安装" |
+
+## 第 2 步：安装本模组
 
 1. 找到游戏的 UE4SS Mods 目录：
 
@@ -89,11 +133,16 @@
    ...\platform\steam\ue4ss\Mods\PBZWallSense\README.md
    ```
 
-3. 用记事本打开同目录下的 `mods.txt`，在文件末尾追加一行（注意冒号前后各一个空格）：
+3. 用记事本打开 **`<游戏目录>\platform\steam\ue4ss\Mods\mods.txt`**
+   （就是刚才放 `PBZWallSense` 文件夹的那个位置），拉到文件最下面，
+   **另起一行**写：
 
    ```
    PBZWallSense : 1
    ```
+
+   注意两点：冒号**前后各一个空格**；如果最后一行没有换行，先按一次回车再写。
+   保存时用默认编码即可（文件里只有英文和冒号）。
 
 4. **重启游戏**（不要依赖热重载：`EnableHotReloadSystem` 在本作里会卡死）。
 
