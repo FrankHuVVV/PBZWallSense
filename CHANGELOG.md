@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.1.6 — 2026-11-07
+
+**新增**
+- 仓库内置一份**已验证可用的 UE4SS 3.0.1**（`ue4ss-bundle/`）：`dwmapi.dll` + `ue4ss\`（含 UE4SS.dll、
+  已调好的 UE4SS-settings.ini、LICENSE、UE4SS 自带的官方 Mods）。用户不必再去 GitHub 找版本
+- release 增加 `UE4SS-v3.0.1-bundle.zip`，解压即用
+
+**文档**
+- 第 1 步改为「用本仓库自带的 UE4SS」，说明来源、版本、以及为什么随包配置里关掉了热重载
+
 ## v0.1.5 — 2026-11-07
 
 **文档**

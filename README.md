@@ -36,48 +36,50 @@
 | 项 | 要求 |
 |---|---|
 | 游戏 | Steam 版《影之刃零》，build **26266538**（UE 5.7） |
-| 模组框架 | 需要自行安装 **UE4SS 3.0.1**（[RE-UE4SS](https://github.com/UE4SS-RE/RE-UE4SS)），游戏本身**不自带** |
+| 模组框架 | **UE4SS 3.0.1** —— 本仓库自带一份已验证的副本（`ue4ss-bundle/`），游戏本身**不自带** |
 | 其他 | 无。不需要 Cheat Engine、不需要内存注入 |
 
 > 游戏更新后类名可能变化，届时需要自行调整 `main.lua` 里的类名或等待更新。
 
 ## 第 1 步：安装 UE4SS（必做，游戏不自带）
 
-本模组是 **UE4SS 的 Lua 模组**。UE4SS 不是游戏的一部分，**必须先自己装一次**，
+本模组是 **UE4SS 的 Lua 模组**。UE4SS 不是游戏的一部分，**必须先装一次**，
 否则后面的模组放进去也不会有任何反应（连日志都不会生成）。
 
+**本仓库自带一份已验证可用的 UE4SS 3.0.1**（`ue4ss-bundle/` 目录），不用去 GitHub 找版本。
+
 > 下面所有路径里的 `<游戏目录>`，指你 Steam 里这个游戏的安装位置。
-> 不知道在哪：**Steam 库 → 右键「Phantom Blade Zero」→ 管理 → 浏览本地文件**，
-> 打开的窗口地址栏里那一串就是。
+> 不知道在哪：**Steam 库 → 右键「Phantom Blade Zero」→ 管理 → 浏览本地文件**。
 
-### 1.1 下载
+### 1.1 拿到文件
 
-打开 <https://github.com/UE4SS-RE/RE-UE4SS/releases/tag/v3.0.1>，
-在页面最下面的 **Assets** 里点 **`UE4SS_v3.0.1.zip`** 下载。
+二选一：
 
-> 认准 **v3.0.1**：本模组只在 3.0.1 上验证过，其他版本可能因为接口/类名变化而失效。
-> 如果 3.0.1 页面上有多个 zip，选名字不带 `zDEV` 的那个。
+- **推荐**：下载 release 里的 **`UE4SS-v3.0.1-bundle.zip`**，解压；
+- 或者：本仓库首页 → `Code` → `Download ZIP`，解压后进入 `ue4ss-bundle/`。
 
-解压后你会看到一个文件夹，里面有这 6 样东西：
+解压后是：
 
 ```
-UE4SS.dll
-UE4SS-settings.ini
-dwmapi.dll
-Mods\                 （文件夹）
-README.md
-Changelog.md
+ue4ss-bundle\
+├── dwmapi.dll
+└── ue4ss\
+    ├── UE4SS.dll
+    ├── UE4SS-settings.ini
+    ├── LICENSE
+    └── Mods\
 ```
+
+> 这份 UE4SS 的版本是 **v3.0.1**（日志开头会写 `UE4SS - v3.0.1 ...`）。
+> 随包的 `UE4SS-settings.ini` 已经把 `EnableHotReloadSystem` 关掉了——本作开着它按热重载键会卡死。
 
 ### 1.2 摆放（关键，摆错就等于没装）
 
 1. 进入 **`<游戏目录>\platform\steam\`** —— 这个目录里应该有 `PBZ.exe`。
-2. 在这个目录里**新建一个文件夹，名字就叫 `ue4ss`**（全小写）。
-3. 把解压出来的 **`UE4SS.dll`、`UE4SS-settings.ini`、`Mods` 文件夹** 三个东西，
-   剪切/复制进刚建的 `ue4ss` 文件夹里。
-   （`README.md`、`Changelog.md` 是说明文档，放不放都行。）
-4. 把 **`dwmapi.dll`** 复制到 **`<游戏目录>\platform\steam\`** 里，
-   也就是**和 `PBZ.exe` 同一个目录**（注意：它在 `ue4ss` 文件夹的**外面**）。
+2. 把 **`dwmapi.dll`** 复制进去，**和 `PBZ.exe` 同级**。
+3. 把整个 **`ue4ss` 文件夹**复制进去。
+4. 如果之前装过 UE4SS，**先把旧的 `ue4ss` 文件夹改名**（例如 `ue4ss.bak`）再复制，
+   不要直接覆盖——万一新版有问题还能换回来。
 
 做完之后，目录结构必须是这样：
 
