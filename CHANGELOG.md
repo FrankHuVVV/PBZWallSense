@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.1.4 — 2026-11-07
+
+**文档修正**
+- 更正 README：**UE4SS 不是游戏自带**，必须自行安装。新增「先装 UE4SS」一节，含官方仓库地址
+  <https://github.com/UE4SS-RE/RE-UE4SS/releases> 与安装位置、验证方法
+- 补充「没有 `UE4SS.log` = UE4SS 没装好」的判断说明
+
 ## v0.1.3 — 2026-11-07
 
 **新增**

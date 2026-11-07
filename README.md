@@ -36,10 +36,42 @@
 | 项 | 要求 |
 |---|---|
 | 游戏 | Steam 版《影之刃零》，build **26266538**（UE 5.7） |
-| 模组框架 | **UE4SS 3.0.1**（本作自带，路径见下） |
+| 模组框架 | 需要自行安装 **UE4SS 3.0.1**（[RE-UE4SS](https://github.com/UE4SS-RE/RE-UE4SS)），游戏本身**不自带** |
 | 其他 | 无。不需要 Cheat Engine、不需要内存注入 |
 
 > 游戏更新后类名可能变化，届时需要自行调整 `main.lua` 里的类名或等待更新。
+
+## 先装 UE4SS（游戏不自带）
+
+本模组是 **UE4SS 的 Lua 模组**，而 UE4SS 并不是游戏的一部分——必须自己先装一次。
+
+1. 打开 **<https://github.com/UE4SS-RE/RE-UE4SS/releases>**，下载 **3.0.1** 的 Windows 发行包
+   （文件名类似 `UE4SS_v3.0.1.zip`）。
+   > 本模组只在 3.0.1 上验证过；其他版本可能因为类名/接口变化而失效。
+
+2. 解压后，把发行包里的 `ue4ss` 文件夹**和** `dwmapi.dll` 一起复制到：
+
+   ```
+   <游戏安装目录>\platform\steam\
+   ```
+
+   装好后应该存在这两个文件：
+
+   ```
+   ...\platform\steam\ue4ss\UE4SS.dll
+   ...\platform\steam\dwmapi.dll
+   ```
+
+   `dwmapi.dll` 是 UE4SS 的注入代理（文件属性里写着 `UE4SS Injection Proxy`），
+   游戏本身不提供它——这也是判断"到底装没装"的依据。
+
+3. 启动一次游戏再退出，确认生成了日志：
+
+   ```
+   ...\platform\steam\ue4ss\UE4SS.log
+   ```
+
+   有日志 = 注入成功；没日志 = 位置放错或版本不对，先解决这个再装模组。
 
 ## 安装（手动，三步）
 
@@ -66,6 +98,8 @@
 4. **重启游戏**（不要依赖热重载：`EnableHotReloadSystem` 在本作里会卡死）。
 
 启动后日志 `platform\steam\ue4ss\UE4SS.log` 里应出现：
+
+> 如果这个日志文件根本不存在，说明上一节的 UE4SS 没装好，模组不会加载——先回去把 UE4SS 装对。
 
 ```
 Starting Lua mod 'PBZWallSense'
