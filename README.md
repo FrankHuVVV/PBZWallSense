@@ -100,4 +100,6 @@ Starting Lua mod 'PBZWallSense'
 
 ## 许可
 
-未指定许可证。转载、修改、二次分发前请先联系作者。
+本项目采用 **MIT License**，详见 [LICENSE](LICENSE)。
+
+简单说：可以自由使用、修改、分发，保留版权声明即可。这是个人作品，与游戏开发商 / 发行商无关。

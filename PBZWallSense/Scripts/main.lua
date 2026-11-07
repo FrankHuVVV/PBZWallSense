@@ -323,11 +323,30 @@ end
 
 -- ------------------------------------------------------------------ 控件池
 
-local SPRITE_CANDIDATES = {
-    "Mods/PBZWallSense/art/ring.png",   -- 相对 UE4SS 的工作目录（...\platform\steam\ue4ss\）
-    "art/ring.png",
-    "D:/SteamLibrary/steamapps/common/PBZ/platform/steam/ue4ss/Mods/PBZWallSense/art/ring.png",
-}
+-- 贴图路径：不写死任何绝对路径，按可用信息推导
+--   1) UE4SS 若暴露 GetModDir()，直接用它
+--   2) 从 package.path 里挖出本模组目录（UE4SS 会把它加进去）
+--   3) 相对路径：UE 的进程工作目录是游戏 exe 所在目录，所以是 ue4ss/Mods/...
+local function spriteCandidates()
+    local out = {}
+
+    local okDir, d = pcall(function() return GetModDir() end)
+    if okDir and type(d) == "string" and #d > 2 then
+        out[#out + 1] = (d:gsub("[/\\]+$", "")) .. "/art/ring.png"
+    end
+
+    pcall(function()
+        for p in tostring(package.path):gmatch("[^;]+") do
+            local base = p:match("^(.-)[/\\]Scripts[/\\][^/\\]+$")
+            if base and #base > 2 then out[#out + 1] = base .. "/art/ring.png" end
+        end
+    end)
+
+    out[#out + 1] = "ue4ss/Mods/PBZWallSense/art/ring.png"
+    out[#out + 1] = "Mods/PBZWallSense/art/ring.png"
+    out[#out + 1] = "art/ring.png"
+    return out
+end
 
 local function spriteTexture(pc)
     if M.spriteTried then return M.sprite end
@@ -337,7 +356,7 @@ local function spriteTexture(pc)
         log("!! 找不到 KismetRenderingLibrary，贴图跳过")
         return nil
     end
-    for _, path in ipairs(SPRITE_CANDIDATES) do
+    for _, path in ipairs(spriteCandidates()) do
         local ok, tex = pcall(function() return lib:ImportFileAsTexture2D(pc, path) end)
         if ok and valid(tex) then
             M.sprite = tex
@@ -346,6 +365,7 @@ local function spriteTexture(pc)
         end
         log("!! 贴图尝试失败: " .. path .. " -> " .. tostring(tex))
     end
+    log("!! 所有候选路径都失败，标记将退回控件默认图标")
     return nil
 end
 
