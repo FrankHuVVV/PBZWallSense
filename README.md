@@ -66,12 +66,23 @@ ue4ss-bundle\
 └── ue4ss\
     ├── UE4SS.dll
     ├── UE4SS-settings.ini
+    ├── MemberVariableLayout.ini
     ├── LICENSE
+    ├── UE4SS_Signatures\        ← 本作专用签名脚本（必须带）
+    │   ├── GNatives.lua
+    │   └── GUObjectArray.lua
+    ├── UE4SS_SDK_Backends\
+    │   └── UE4SS.json
     └── Mods\
 ```
 
 > 这份 UE4SS 的版本是 **v3.0.1**（日志开头会写 `UE4SS - v3.0.1 ...`）。
 > 随包的 `UE4SS-settings.ini` 已经把 `EnableHotReloadSystem` 关掉了——本作开着它按热重载键会卡死。
+
+> **为什么箱里还带 `UE4SS_Signatures` 和 `MemberVariableLayout.ini`？**
+> 本作是 Shipping 构建，官方 UE4SS 的通用 AOB 扫描**找不到** `GNatives` 和 `GUObjectArray`，
+> 必须靠这两个为本作写的签名脚本；`MemberVariableLayout.ini` 则是 build 26266538 的成员偏移。
+> **少了它们，UE4SS 只会打印一堆失败然后什么都不工作**——所以别只把 `UE4SS.dll` 复制过去。
 
 ### 1.2 摆放（关键，摆错就等于没装）
 

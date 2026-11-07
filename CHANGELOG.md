@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.1.7 — 2026-11-07
+
+**修复**
+- UE4SS bundle 补上**签名脚本**：`UE4SS_Signatures\GNatives.lua`、`UE4SS_Signatures\GUObjectArray.lua`，
+  以及 `MemberVariableLayout.ini`（build 26266538 的成员偏移）与 `UE4SS_SDK_Backends\UE4SS.json`
+- 上一版只带了 `UE4SS.dll`，本作是 Shipping 构建，缺签名时通用 AOB 扫描解析不出
+  `GNatives` / `GUObjectArray`，UE4SS 实际不会工作——这一版已修
+
 ## v0.1.6 — 2026-11-07
 
 **新增**
